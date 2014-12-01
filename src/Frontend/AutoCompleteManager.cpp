@@ -49,10 +49,25 @@ void AutoCompleteManager::BuildFromProject(const Project* project)
     {
         BuildFromFile(project->GetFile(fileIndex));
     }
+	BuildCoreApis();
+
 
     // Sort the autocompletions (necessary for binary search).
     std::sort(m_entries.begin(), m_entries.end());
 
+}
+
+void AutoCompleteManager::BuildCoreApis()
+{
+	CoreApis coreapis;
+	coreapis.buildSymbols();
+	for (unsigned int symbolIndex = 0; symbolIndex < coreapis.core_symbols.size(); ++symbolIndex)
+	{
+		//char function_name[40];
+		//sprintf(function_name,"func_%d",symbolIndex);
+		Symbol symbol = coreapis.core_symbols[symbolIndex];
+		m_entries.push_back(Entry(symbol.name, Type_Function, ""));
+	}
 }
 
 void AutoCompleteManager::BuildFromFile(const Project::File* file)
